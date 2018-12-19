@@ -52,6 +52,7 @@ LIGHTNINGD_COMMON_OBJS :=			\
 	common/wire_error.o			\
 	common/wireaddr.o			\
 	common/withdraw_tx.o			\
+	common/glibc_compact.c		\
 	hsmd/gen_hsm_wire.o
 
 LIGHTNINGD_SRC :=				\

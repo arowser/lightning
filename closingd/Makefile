@@ -73,6 +73,7 @@ CLOSINGD_COMMON_OBJS :=				\
 	common/wire_error.o			\
 	common/wireaddr.o			\
 	gossipd/gen_gossip_peerd_wire.o		\
+	common/glibc_compact.c		\
 	hsmd/gen_hsm_wire.o
 
 closingd/gen_closing_wire.h: $(WIRE_GEN) closingd/closing_wire.csv

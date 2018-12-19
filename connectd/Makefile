@@ -66,6 +66,7 @@ CONNECTD_COMMON_OBJS :=				\
 	gossipd/gen_gossip_wire.o		\
 	hsmd/gen_hsm_wire.o			\
 	lightningd/gossip_msg.o			\
+	common/glibc_compact.c		\
 	wire/gen_onion_wire.o
 
 $(LIGHTNINGD_CONNECT_OBJS): $(LIGHTNINGD_HEADERS) $(LIGHTNINGD_CONNECT_HEADERS)

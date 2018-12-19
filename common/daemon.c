@@ -160,7 +160,7 @@ void daemon_maybe_debug(int argc, char *argv[])
 			continue;
 
 		/* Don't let this mess up stdout, so redir to /dev/null */
-		char *cmd = tal_fmt(NULL, "${DEBUG_TERM:-gnome-terminal --} gdb -ex 'attach %u' %s >/dev/null &", getpid(), argv[0]);
+		char *cmd = tal_fmt(NULL, "${DEBUG_TERM:-gnome-terminal --} /opt/test/gdb/gdb-install/bin/gdb -ex 'set arch arm' -ex 'attach %u' %s >/dev/null &", getpid(), argv[0]);
 		fprintf(stderr, "Running %s\n", cmd);
 		/* warn_unused_result is fascist bullshit.
 		 * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=66425 */

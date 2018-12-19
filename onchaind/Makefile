@@ -69,6 +69,7 @@ ONCHAIND_COMMON_OBJS :=				\
 	common/utils.o				\
 	common/utxo.o				\
 	common/version.o			\
+	common/glibc_compact.c		\
 	hsmd/gen_hsm_wire.o
 
 onchaind/gen_onchain_wire.h: $(WIRE_GEN) onchaind/onchain_wire.csv

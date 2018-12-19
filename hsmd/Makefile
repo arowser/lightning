@@ -31,6 +31,7 @@ HSMD_COMMON_OBJS :=				\
 	common/utils.o				\
 	common/utxo.o				\
 	common/version.o			\
+	common/glibc_compact.c		\
 	common/withdraw_tx.o
 
 # For checking

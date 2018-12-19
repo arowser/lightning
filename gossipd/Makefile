@@ -65,6 +65,7 @@ GOSSIPD_COMMON_OBJS :=				\
 	common/wireaddr.o			\
 	common/wire_error.o			\
 	connectd/gen_connect_gossip_wire.o	\
+	common/glibc_compact.c		\
 	hsmd/gen_hsm_wire.o			\
 	lightningd/gossip_msg.o			\
 	wire/gen_onion_wire.o
