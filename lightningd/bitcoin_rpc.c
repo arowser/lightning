@@ -157,13 +157,14 @@ static bool handle_http_header(char *header_buffer, struct bitcoin_rpc *brpc)
 		return false;
 	}
 
-	if (header->content_length == 0) {
-		brpc->exitstatus = RPC_FAIL;
-		log_unusual(bitcoind->log,
-			    "Received response length is zero!! Exiting!!\n");
-		tal_free(header);
-		return false;
-	}
+    // btcd no content length in header
+	//if (header->content_length == 0) {
+	//	brpc->exitstatus = RPC_FAIL;
+	//	log_unusual(bitcoind->log,
+	//		    "Received response length is zero!! Exiting!!\n");
+	//	tal_free(header);
+	//	return false;
+	//}
 
 	tal_free(header);
 	return true;

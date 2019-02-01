@@ -356,8 +356,8 @@ static void do_one_estimatefee(struct bitcoind *bitcoind,
 
 	snprintf(blockstr, sizeof(blockstr), "%u", efee->blocks[efee->i]);
 	start_bitcoin_rpc(bitcoind, NULL, process_estimatefee, false,
-			  BITCOIND_LOW_PRIO, NULL, efee, "estimatesmartfee",
-			  blockstr, efee->estmode[efee->i], NULL);
+			  BITCOIND_LOW_PRIO, NULL, efee, "estimatefee",
+			  blockstr, NULL, NULL);
 }
 
 void bitcoind_estimate_fees_(struct bitcoind *bitcoind, const u32 blocks[],
@@ -750,7 +750,7 @@ void wait_for_bitcoind(struct bitcoind *bitcoind)
 
 		brpc->request =
 		    "{\"jsonrpc\": \"1.0\", \"id\":\"lightningd\", \"method\": "
-		    "\"getblockchaininfo\", \"params\":[] }";
+		    "\"getinfo\", \"params\":[] }";
 
 		if (!rpc_request(brpc))
 			fatal_bitcoind_failure(bitcoind, "RPC call fail\n");

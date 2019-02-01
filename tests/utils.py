@@ -18,7 +18,7 @@ import threading
 import time
 
 BITCOIND_CONFIG = {
-    "regtest": 1,
+    "simnet": 1,
     "rpcuser": "rpcuser",
     "rpcpassword": "rpcpass",
 }
@@ -55,13 +55,13 @@ def wait_for(success, timeout=TIMEOUT):
         raise ValueError("Error waiting for {}", success)
 
 
-def write_config(filename, opts, regtest_opts=None):
+def write_config(filename, opts, simnet_opts=None):
     with open(filename, 'w') as f:
         for k, v in opts.items():
             f.write("{}={}\n".format(k, v))
-        if regtest_opts:
-            f.write("[regtest]\n")
-            for k, v in regtest_opts.items():
+        if simnet_opts:
+            f.write("[simnet]\n")
+            for k, v in simnet_opts.items():
                 f.write("{}={}\n".format(k, v))
 
 
@@ -122,7 +122,7 @@ class TailableProc(object):
         """Start the underlying process and start monitoring it.
         """
         logging.debug("Starting '%s'", " ".join(self.cmd_line))
-        self.proc = subprocess.Popen(self.cmd_line, stdout=subprocess.PIPE, env=self.env)
+        self.proc = subprocess.Popen(self.cmd_line, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=self.env)
         self.thread = threading.Thread(target=self.tail)
         self.thread.daemon = True
         self.thread.start()
@@ -278,30 +278,29 @@ class BitcoinD(TailableProc):
         self.rpcport = rpcport
         self.prefix = 'bitcoind'
 
-        regtestdir = os.path.join(bitcoin_dir, 'regtest')
-        if not os.path.exists(regtestdir):
-            os.makedirs(regtestdir)
+        simnetdir = os.path.join(bitcoin_dir, 'simnet')
+        if not os.path.exists(simnetdir):
+            os.makedirs(simnetdir)
 
         self.cmd_line = [
-            'bitcoind',
-            '-datadir={}'.format(bitcoin_dir),
-            '-printtoconsole',
-            '-server',
-            '-logtimestamps',
-            '-nolisten',
+            'btcd',
+            '--simnet',
+            '--datadir={}'.format(bitcoin_dir),
+            '--miningaddr=SVv2gHztnPJa2YU7J4SjkiBMXcTvnDWxgM',
+            '--notls',
         ]
         # For up to and including 0.16.1, this needs to be in main section.
         BITCOIND_CONFIG['rpcport'] = rpcport
         # For after 0.16.1 (eg. 3f398d7a17f136cd4a67998406ca41a124ae2966), this
-        # needs its own [regtest] section.
-        BITCOIND_REGTEST = {'rpcport': rpcport}
+        # needs its own [simnet] section.
+        BITCOIND_simnet = {'rpcport': rpcport}
         btc_conf_file = os.path.join(bitcoin_dir, 'bitcoin.conf')
-        write_config(btc_conf_file, BITCOIND_CONFIG, BITCOIND_REGTEST)
+        write_config(btc_conf_file, BITCOIND_CONFIG, BITCOIND_simnet)
         self.rpc = SimpleBitcoinProxy(btc_conf_file=btc_conf_file)
 
     def start(self):
         TailableProc.start(self)
-        self.wait_for_log("Done loading", timeout=TIMEOUT)
+        self.wait_for_log("Server listening on ", timeout=TIMEOUT)
 
         logging.info("BitcoinD started")
 
@@ -326,7 +325,7 @@ class LightningD(TailableProc):
             'lightning-dir': lightning_dir,
             'addr': '127.0.0.1:{}'.format(port),
             'allow-deprecated-apis': 'false',
-            'network': 'regtest',
+            'network': 'simnet',
             'ignore-fee-limits': 'false',
             'bitcoin-rpcuser': BITCOIND_CONFIG['rpcuser'],
             'bitcoin-rpcpassword': BITCOIND_CONFIG['rpcpassword'],
@@ -778,7 +777,7 @@ class NodeFactory(object):
         node = LightningNode(daemon, rpc, self.bitcoind, self.executor, may_fail=may_fail,
                              may_reconnect=may_reconnect)
 
-        # Regtest estimatefee are unusable, so override.
+        # simnet estimatefee are unusable, so override.
         node.set_feerates(feerates, False)
 
         self.nodes.append(node)
