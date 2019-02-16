@@ -88,6 +88,95 @@ jobs:
             sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset
             sed -i -e 's/#EnableQEMU //g' "contrib/linuxarm32v7.Dockerfile"
             sudo docker build -t "temp-arm" -f contrib/linuxarm32v7.Dockerfile .
+  linuxarm64v8_build:
+    machine:
+      enabled: true
+      image: circleci/classic:201808-01
+    steps:
+      - checkout
+      - run:
+          command: |
+            # Make sure the builder is copy the arm emulator
+            sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset
+            sudo docker build -t "temp-arm64" -f contrib/linuxarm64v8.Dockerfile .
+  linuxppc_build:
+    machine:
+      enabled: true
+      image: circleci/classic:201808-01
+    steps:
+      - checkout
+      - run:
+          command: |
+            # Make sure the builder is copy the arm emulator
+            sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset
+            sudo docker build -t "temp-ppc" -f contrib/linuxppc.Dockerfile .
+  linuxppc64_build:
+    machine:
+      enabled: true
+      image: circleci/classic:201808-01
+    steps:
+      - checkout
+      - run:
+          command: |
+            # Make sure the builder is copy the arm emulator
+            sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset
+            sudo docker build -t "temp-ppc64" -f contrib/linuxppc64.Dockerfile .
+  linuxppc64le_build:
+    machine:
+      enabled: true
+      image: circleci/classic:201808-01
+    steps:
+      - checkout
+      - run:
+          command: |
+            # Make sure the builder is copy the arm emulator
+            sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset
+            sudo docker build -t "temp-ppc64le" -f contrib/linuxppc64le.Dockerfile .
+  linuxmips_build:
+    machine:
+      enabled: true
+      image: circleci/classic:201808-01
+    steps:
+      - checkout
+      - run:
+          command: |
+            # Make sure the builder is copy the arm emulator
+            sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset
+            sudo docker build -t "temp-mips" -f contrib/linuxmips.Dockerfile .
+  linuxmips64_build:
+    machine:
+      enabled: true
+      image: circleci/classic:201808-01
+    steps:
+      - checkout
+      - run:
+          command: |
+            # Make sure the builder is copy the arm emulator
+            sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset
+            sudo docker build -t "temp-mips64" -f contrib/linuxmips64.Dockerfile .
+  linuxriscv32_build:
+    machine:
+      enabled: true
+      image: circleci/classic:201808-01
+    steps:
+      - checkout
+      - run:
+          command: |
+            # Make sure the builder is copy the arm emulator
+            sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset
+            sudo docker build -t "temp-riscv32" -f contrib/linuxriscv32.Dockerfile .
+  linuxriscv64_build:
+    machine:
+      enabled: true
+      image: circleci/classic:201808-01
+    steps:
+      - checkout
+      - run:
+          command: |
+            # Make sure the builder is copy the arm emulator
+            sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset
+            sudo docker build -t "temp-riscv64" -f contrib/linuxriscv64.Dockerfile .
+  
 workflows:
   version: 2
   publish:
@@ -104,6 +193,34 @@ workflows:
           filters:
             branches:
               only: /.*/
+      - linuxarm64v8_build:
+          filters:
+            branches:
+              only: /.*/
+      - linuxppc_build:
+          filters:
+            branches:
+              only: /.*/
+      - linuxppc64_build:
+          filters:
+            branches:
+              only: /.*/
+      - linuxmips_build:
+          filters:
+            branches:
+              only: /.*/
+      - linuxmips64_build:
+          filters:
+            branches:
+              only: /.*/
+#      - linuxriscv32_build:
+#          filters:
+#            branches:
+#              only: /.*/
+#      - linuxriscv64_build:
+#          filters:
+#            branches:
+#              only: /.*/
       - linuxamd64_publish:
           filters:
             # ignore any commit on any branch by default 

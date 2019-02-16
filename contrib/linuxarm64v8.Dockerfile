@@ -1,10 +1,10 @@
-# This dockerfile is meant to cross compile with a x64 machine for a arm32v7 host
+# This dockerfile is meant to cross compile with a x64 machine for a aarch64v7 host
 # It is using multi stage build: 
 # * downloader: Download litecoin/bitcoin and qemu binaries needed for c-lightning
 # * builder: Cross compile c-lightning dependencies, then c-lightning itself with static linking
 # * final: Copy the binaries required at runtime
 # The resulting image uploaded to dockerhub will only contain what is needed for runtime.
-# From the root of the repository, run "docker build -t yourimage:yourtag -f contrib/linuxarm32v7.Dockerfile ."
+# From the root of the repository, run "docker build -t yourimage:yourtag -f contrib/linuxaarch64v7.Dockerfile ."
 FROM debian:stretch-slim as downloader
 
 RUN set -ex \
@@ -15,7 +15,7 @@ RUN set -ex \
 WORKDIR /opt
 
 ARG BITCOIN_VERSION=0.17.0
-ENV BITCOIN_TARBALL bitcoin-$BITCOIN_VERSION-arm-linux-gnueabihf.tar.gz
+ENV BITCOIN_TARBALL bitcoin-$BITCOIN_VERSION-aarch64-linux-gnu.tar.gz
 ENV BITCOIN_URL https://bitcoincore.org/bin/bitcoin-core-$BITCOIN_VERSION/$BITCOIN_TARBALL
 ENV BITCOIN_ASC_URL https://bitcoincore.org/bin/bitcoin-core-$BITCOIN_VERSION/SHA256SUMS.asc
 
@@ -29,9 +29,9 @@ RUN mkdir /opt/bitcoin && cd /opt/bitcoin \
     && rm $BITCOIN_TARBALL
 
 ENV LITECOIN_VERSION 0.14.2
-ENV LITECOIN_TARBALL litecoin-$LITECOIN_VERSION-arm-linux-gnueabihf.tar.gz
+ENV LITECOIN_TARBALL litecoin-$LITECOIN_VERSION-aarch64-linux-gnu.tar.gz
 ENV LITECOIN_URL https://download.litecoin.org/litecoin-$LITECOIN_VERSION/linux/$LITECOIN_TARBALL
-ENV LITECOIN_SHA256 e79f2a8e8e1b9920d07cff8482237b56aa4be2623103d3d2825ce09a2cc2f6d7
+ENV LITECOIN_SHA256 69449c3c8206f75cfdef929562b323326f1d0496f77f82608f9a974cbb2fd373
 
 # install litecoin binaries
 RUN mkdir /opt/litecoin && cd /opt/litecoin \
@@ -45,9 +45,9 @@ FROM debian:stretch-slim as builder
 
 ENV LIGHTNINGD_VERSION=master
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates autoconf automake build-essential git libtool python python3 wget gnupg dirmngr git \
-  libc6-armhf-cross gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf
+  libc6-arm64-cross gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
 
-ENV target_host=arm-linux-gnueabihf
+ENV target_host=aarch64-linux-gnu
 
 ENV AR=${target_host}-ar \
 AS=${target_host}-as \
@@ -81,14 +81,14 @@ RUN wget -q https://gmplib.org/download/gmp/gmp-6.1.2.tar.xz \
 && make \
 && make install && cd .. && rm gmp-6.1.2.tar.xz && rm -rf gmp-6.1.2
 
-COPY --from=downloader /usr/bin/qemu-arm-static /usr/bin/qemu-arm-static
+COPY --from=downloader /usr/bin/qemu-aarch64-static /usr/bin/qemu-aarch64-static
 WORKDIR /opt/lightningd
 COPY . .
 ARG DEVELOPER=0
 RUN ./configure --enable-static && make -j3 DEVELOPER=${DEVELOPER} && cp lightningd/lightning* cli/lightning-cli /usr/bin/
 
-FROM arm32v7/debian:stretch-slim as final
-COPY --from=downloader /usr/bin/qemu-arm-static /usr/bin/qemu-arm-static
+FROM arm64v8/debian:stretch-slim as final
+COPY --from=downloader /usr/bin/qemu-aarch64-static /usr/bin/qemu-aarch64-static
 RUN apt-get update && apt-get install -y --no-install-recommends socat inotify-tools \
     && rm -rf /var/lib/apt/lists/* 
 
