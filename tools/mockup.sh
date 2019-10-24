@@ -4,15 +4,15 @@ if [ $# -eq 0 ]; then
     # With no args, read stdin to scrape compiler output.
     # shellcheck disable=SC2046
     set -- $(while read -r LINE; do
-	case "$LINE" in
-	    *undefined\ reference\ to*)
-		LINE=${LINE#*undefined reference to \`}
-		echo "${LINE%\'*}"
-		;;
-	    *)
-		continue
-		;;
-	esac; done | sort -u)
+    case "$LINE" in
+        *undefined\ reference\ to*)
+        LINE=${LINE#*undefined reference to \`}
+        echo "${LINE%\'*}"
+        ;;
+        *)
+        continue
+        ;;
+    esac; done | sort -u)
 fi
 
 for SYMBOL; do
@@ -20,8 +20,8 @@ for SYMBOL; do
     # has notleak_ as a declaration, and then an inline).
     WHERE=$(grep -nH "^[a-zA-Z0-9_ (),]* [*]*$SYMBOL(" ./*/*.h | head -n1)
     if [ x"$WHERE" = x ]; then
-	echo "/* Could not find declaration for $SYMBOL */"
-	continue
+    echo "/* Could not find declaration for $SYMBOL */"
+    continue
     fi
 
     FILE=${WHERE%%:*}
@@ -31,11 +31,11 @@ for SYMBOL; do
     NUM=${END%%:*}
 
     if grep -q "$SYMBOL.*mock empty" "$FILE"; then
-	STUB="{ }"
+    STUB="{ }"
     else
-	# \n on RHS is a GNU extension, and we want to work on FreeBSD
-	# shellcheck disable=SC1004
-	STUB='\
+    # \n on RHS is a GNU extension, and we want to work on FreeBSD
+    # shellcheck disable=SC1004
+    STUB='\
 { fprintf(stderr, "'$SYMBOL' called!\\n"); abort(); }'
     fi
 
