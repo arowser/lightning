@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .TH "LIGHTNINGD-CONFIG" "5" "" "" "lightningd-config"
 .SH NAME
 lightningd-config - Lightning daemon configuration file
@@ -259,6 +260,276 @@ might need to redeem this on-chain, so this is the number of blocks we
 have to do that\.
 
 
+=======
+'\" t
+.\"     Title: lightningd-config
+.\"    Author: [see the "AUTHOR" section]
+<<<<<<< HEAD
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 03/05/2019
+=======
+.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
+.\"      Date: 12/06/2018
+>>>>>>> add bitcoin_rpc.c bitcoin_rpc.h
+.\"    Manual: \ \&
+.\"    Source: \ \&
+.\"  Language: English
+.\"
+<<<<<<< HEAD
+.TH "LIGHTNINGD\-CONFIG" "5" "03/05/2019" "\ \&" "\ \&"
+=======
+.TH "LIGHTNINGD\-CONFIG" "5" "12/06/2018" "\ \&" "\ \&"
+>>>>>>> add bitcoin_rpc.c bitcoin_rpc.h
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+lightningd-config \- Lightning daemon configuration file
+.SH "SYNOPSIS"
+.sp
+\fB~/\&.lightning/config\fR
+.SH "DESCRIPTION"
+.sp
+When lightningd(8) starts up, it reads a configuration file\&. By default that is \fIconfig\fR in the \fB\&.lightning\fR subdirectory of the home directory (if it exists), but that can be changes by the \fI\-\-lightning\-dir\fR or \fI\-\-conf\fR options on the lightningd(8) command line\&.
+.sp
+Configuration file options are processed first, then command line options: later options override earlier ones except \fIaddr\fR options which accumulate\&.
+.sp
+All these options are mirrored as commandline arguments to lightningd(8), so \fI\-\-foo\fR becomes simply \fIfoo\fR in the configuration file, and \fI\-\-foo=bar\fR becomes \fIfoo=bar\fR in the configuration file\&.
+.sp
+Blank lines and lines beginning with \fI#\fR are ignored\&.
+.SH "DEBUGGING"
+.sp
+\fI\-\-help\fR will show you the defaults for many options; they vary with network settings so you can specify \fI\-\-network\fR before \fI\-\-help\fR to see the defaults for that network\&.
+.sp
+The lightning\-listconfigs(7) command will output a valid configuration file using the current settings\&.
+.SH "OPTIONS"
+.SS "General options"
+.PP
+\fBallow\-deprecated\-apis\fR=\fIBOOL\fR
+.RS 4
+Enable deprecated options, JSONRPC commands, fields, etc\&. It defaults to
+\fItrue\fR, but you should set it to
+\fIfalse\fR
+when testing to ensure that an upgrade won\(cqt break your configuration\&.
+.RE
+.PP
+\fBhelp\fR
+.RS 4
+Print help and exit\&. Not very useful inside a configuration file, but fun to put in other\(cqs config files while their computer is unattended\&.
+.RE
+.PP
+\fBversion\fR
+.RS 4
+Print version and exit\&. Also useless inside a configuration file, but putting this in someone\(cqs config file may convince them to read this man page\&.
+.RE
+.sp
+Bitcoin control options:
+.PP
+\fBnetwork\fR=\fINETWORK\fR
+.RS 4
+Select the network parameters (\fIbitcoin\fR,
+\fItestnet\fR, or
+\fIregtest\fR)\&.
+.RE
+.PP
+\fBtestnet\fR
+.RS 4
+Alias for
+\fInetwork=testnet\fR\&.
+.RE
+.PP
+\fBmainnet\fR
+.RS 4
+Alias for
+\fInetwork=bitcoin\fR\&.
+.RE
+.PP
+\fBbitcoin\-datadir\fR=\fIDIR\fR
+.RS 4
+\fI\-datadir\fR
+argument to supply to bitcoin rpc(1)\&.
+.RE
+.PP
+\fBbitcoin\-rpccookiefile\fR=\fIPATH\fR
+.RS 4
+The RPC auth cookie location\&. Relative paths will be prefixed by a net\-specific datadir location\&. (default: bitcoin data dir)
+.RE
+.PP
+\fBbitcoin\-rpcuser\fR=\fIUSER\fR
+.RS 4
+The RPC username for talking to bitcoind(1)\&.
+.RE
+.PP
+\fBbitcoin\-rpcpassword\fR=\fIPASSWORD\fR
+.RS 4
+The RPC password for talking to bitcoind(1)\&.
+.RE
+.PP
+\fBbitcoin\-rpcconnect\fR=\fIHOST\fR
+.RS 4
+The bitcoind(1) RPC host to connect to\&.
+.RE
+.PP
+\fBbitcoin\-rpcport\fR=\fIPORT\fR
+.RS 4
+The bitcoind(1) RPC port to connect to\&.
+.RE
+.PP
+\fBbitcoin\-rpcclienttimeout\fR=\fISECONDS\fR
+.RS 4
+The bitcoind(1) RPC timeout\&.
+.RE
+.PP
+\fBbitcoin\-rpcthreads\fR=\fINUMBERS\fR
+.RS 4
+The bitcoind(1) RPC thread numbers\&.
+.RE
+.PP
+\fBrescan\fR=\fIBLOCKS\fR
+.RS 4
+Number of blocks to rescan from the current head, or absolute blockheight if negative\&. This is only needed if something goes badly wrong\&.
+.RE
+.SS "Lightning daemon options"
+.PP
+\fBlightning\-dir\fR=\fIDIR\fR
+.RS 4
+Sets the working directory\&. All files (except
+\fI\-\-conf\fR
+on the command line) are relative to this\&.
+.RE
+.PP
+\fBpid\-file\fR=\fIPATH\fR
+.RS 4
+Specify pid file to write to\&.
+.RE
+.PP
+\fBlog\-level\fR=\fILEVEL\fR
+.RS 4
+What log level to print out: options are io, debug, info, unusual, broken\&.
+.RE
+.PP
+\fBlog\-prefix\fR=\fIPREFIX\fR
+.RS 4
+Prefix for log lines: this can be customized if you want to merge logs with multiple daemons\&.
+.RE
+.PP
+\fBlog\-file\fR=\fIPATH\fR
+.RS 4
+Log to this file instead of stdout\&. Sending lightningd(1) SIGHUP will cause it to reopen this file (useful for log rotation)\&.
+.RE
+.PP
+\fBrpc\-file\fR=\fIPATH\fR
+.RS 4
+Set JSON\-RPC socket (or /dev/tty), such as for lightning\-cli(1)\&.
+.RE
+.PP
+\fBdaemon\fR
+.RS 4
+Run in the background, suppress stdout and stderr\&.
+.RE
+.PP
+\fBconf\fR=\fIPATH\fR
+.RS 4
+Sets configuration file (default:
+\fBlightning\-dir\fR/\fIconfig\fR
+)\&. If this is a relative path, it is relative to the starting directory, not
+\fBlightning\-dir\fR
+(unlike other paths)\&.
+\fIPATH\fR
+must exist and be readable (we allow missing files in the default case)\&. Using this inside a configuration file is meaningless\&.
+.RE
+.SS "Lightning node customization options"
+.PP
+\fBrgb\fR=\fIRRGGBB\fR
+.RS 4
+Your favorite color as a hex code\&.
+.RE
+.PP
+\fBalias\fR=\fINAME\fR
+.RS 4
+Up to 32 UTF\-8 characters to tag your node\&. Completely silly, since anyone can call their node anything they want\&. The default is an NSA\-style codename derived from your public key, but "Peter Todd" and "VAULTERO" are good options, too\&.
+.RE
+.PP
+\fBfee\-base\fR=\fIMILLISATOSHI\fR
+.RS 4
+The base fee to charge for every payment which passes through\&. Note that millisatoshis are a very, very small unit! Changing this value will only affect new channels and not existing ones\&. If you want to change fees for existing channels, use the RPC call lightningd\-setchannelfee(7)\&.
+.RE
+.PP
+\fBfee\-per\-satoshi\fR=\fIMILLIONTHS\fR
+.RS 4
+This is the proportional fee to charge for every payment which passes through\&. As percentages are too coarse, it\(cqs in millionths, so 10000 is 1%, 1000 is 0\&.1%\&. Changing this value will only affect new channels and not existing ones\&. If you want to change fees for existing channels, use the RPC call lightningd\-setchannelfee(7)\&.
+.RE
+.PP
+\fBignore\-fee\-limits\fR=\fIBOOL\fR
+.RS 4
+Allow nodes which establish channels to us to set any fee they want\&. This may result in a channel which cannot be closed, should fees increase, but make channels far more reliable since we never close it due to unreasonable fees\&.
+.RE
+.PP
+\fBcommit\-time\fR=\*(AqMILLISECONDS
+.RS 4
+How long to wait before sending commitment messages to the peer: in theory increasing this would reduce load, but your node would have to be extremely busy node for you to even notice\&.
+.RE
+.SS "Lightning channel and HTLC options"
+.PP
+\fBwatchtime\-blocks\fR=\fIBLOCKS\fR
+.RS 4
+How long we need to spot an outdated close attempt: on opening a channel we tell our peer that this is how long they\(cqll have to wait if they perform a unilateral close\&.
+.RE
+.PP
+\fBmax\-locktime\-blocks\fR=\fIBLOCKS\fR
+.RS 4
+The longest our funds can be delayed (ie\&. the longest
+\fBwatchtime\-blocks\fR
+our peer can ask for, and also the longest HTLC timeout we will accept)\&. If our peer asks for longer, we\(cqll refuse to create a channel, and if an HTLC asks for longer, we\(cqll refuse it\&.
+.RE
+.PP
+\fBfunding\-confirms\fR=\fIBLOCKS\fR
+.RS 4
+Confirmations required for the funding transaction when the other side opens a channel before the channel is usable\&.
+.RE
+.PP
+\fBcommit\-fee\fR=\fIPERCENT\fR
+.RS 4
+The percentage of
+\fIestimatesmartfee 2\fR
+to use for the bitcoin transaction which funds a channel: can be greater than 100\&.
+.RE
+.PP
+\fBcommit\-fee\-min\fR=\fIPERCENT\fR, \fBcommit\-fee\-max\fR=\fIPERCENT\fR
+.RS 4
+Limits on what onchain fee range we\(cqll allow when a node opens a channel with us, as a percentage of
+\fIestimatesmartfee 2\fR\&. If they\(cqre outside this range, we abort their opening attempt\&. Note that
+\fBcommit\-fee\-max\fR
+can (should!) be greater than 100\&.
+.RE
+.PP
+\fBcltv\-delta\fR=\fIBLOCKS\fR
+.RS 4
+The number of blocks between incoming payments and outgoing payments: this needs to be enough to make sure that if we have to, we can close the outgoing payment before the incoming, or redeem the incoming once the outgoing is redeemed\&.
+.RE
+.PP
+\fBcltv\-final\fR=\fIBLOCKS\fR
+.RS 4
+The number of blocks to allow for payments we receive: if we have to, we might need to redeem this on\-chain, so this is the number of blocks we have to do that\&.
+.RE
+.sp
+>>>>>>> ec3d24fbd...     add bitcoin_rpc.c bitcoin_rpc.h
 Invoice control options:
 
 

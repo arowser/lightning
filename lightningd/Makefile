@@ -63,7 +63,6 @@ LIGHTNINGD_COMMON_OBJS :=			\
 	hsmd/gen_hsm_wire.o
 
 LIGHTNINGD_SRC :=				\
-	lightningd/bitcoind.c			\
 	lightningd/chaintopology.c		\
 	lightningd/channel.c			\
 	lightningd/channel_control.c		\

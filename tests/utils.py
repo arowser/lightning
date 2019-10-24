@@ -480,6 +480,10 @@ class LightningD(TailableProc):
             self.opts['dev-fast-gossip'] = None
             self.opts['dev-bitcoind-poll'] = 1
         self.prefix = 'lightningd-%d' % (node_id)
+        self.opts['bitcoin-rpcconnect'] = "127.0.0.1"
+        self.opts['bitcoin-rpcuser'] = BITCOIND_CONFIG['rpcuser']
+        self.opts['bitcoin-rpcpassword'] = BITCOIND_CONFIG['rpcpassword']
+        self.opts['bitcoin-rpcport'] = BITCOIND_CONFIG['rpcport']
 
     def cleanup(self):
         # To force blackhole to exit, disconnect file must be truncated!
@@ -975,7 +979,7 @@ class NodeFactory(object):
                 'valgrind',
                 '-q',
                 '--trace-children=yes',
-                '--trace-children-skip=*python*,*bitcoin-cli*,*elements-cli*',
+                '--trace-children-skip=*python*',
                 '--error-exitcode=7',
                 '--log-file={}/valgrind-errors.%p'.format(node.daemon.lightning_dir)
             ]

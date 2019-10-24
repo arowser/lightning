@@ -27,6 +27,7 @@ This release named by @trueptolemy.
 - bolt11: support for parsing feature bits (field `9`).
 - Wallet: we now support the encryption of the BIP32 master seed (a.k.a. `hsm_secret`).
 - pylightning: includes implementation of handshake protocol
+- lightningd: native bitcoin rpc client.
 
 ### Changed
 
@@ -243,6 +244,7 @@ provide appropriate suffixes for JSON input fields.
 ### Removed
 
 - JSON API: the `waitsendpay` command error return no longer includes `channel_update`
+- lightningd: remove bitcoin-cli dependcy
 
 ### Fixed
 
