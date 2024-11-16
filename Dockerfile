@@ -94,7 +94,8 @@ RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1
 RUN pip3 install --upgrade pip setuptools wheel
 
 RUN wget -q https://zlib.net/fossils/zlib-1.2.13.tar.gz -O zlib.tar.gz && \
-    wget -q https://www.sqlite.org/2019/sqlite-src-3290000.zip -O sqlite.zip
+    wget -q https://www.sqlite.org/2019/sqlite-src-3290000.zip -O sqlite.zip && \
+    wget -q https://ftp.postgresql.org/pub/source/v17.1/postgresql-17.1.tar.gz -O postgres.tar.gz
 
 WORKDIR /opt/lightningd
 COPY . /tmp/lightning
@@ -159,7 +160,8 @@ PKG_CONFIG_PATH="/usr/${target_host}/lib/pkgconfig"
 
 ENV \
 ZLIB_CONFIG="--prefix=${QEMU_LD_PREFIX}" \
-SQLITE_CONFIG="--host=${target_host} --prefix=$QEMU_LD_PREFIX"
+SQLITE_CONFIG="--host=${target_host} --prefix=$QEMU_LD_PREFIX" \
+POSTGRES_CONFIG="--without-readline --prefix=${QEMU_LD_PREFIX}"
 
 FROM base-builder-${TARGETOS}-${TARGETARCH} AS builder
 
@@ -178,6 +180,16 @@ RUN unzip sqlite.zip \
     && ./configure --enable-static --disable-readline --disable-threadsafe --disable-load-extension ${SQLITE_CONFIG} \
     && make \
     && make install && cd .. && rm sqlite.zip && rm -rf sqlite-*
+
+RUN mkdir postgres && tar xvf postgres.tar.gz -C postgres --strip-components=1 \
+    && cd postgres \
+    && ./configure ${POSTGRES_CONFIG} \
+    && make \
+    && cd src/include \ && make install \
+    && cd ../interfaces/libpq \
+    && make install && cd ../../../../ && \
+    rm postgres.tar.gz && \
+    rm -rf postgres
 
 ENV RUST_PROFILE=release
 ENV PATH="/root/.cargo/bin:/root/.local/bin:$PATH"
